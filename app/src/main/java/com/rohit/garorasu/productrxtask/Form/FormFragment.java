@@ -1,11 +1,14 @@
 package com.rohit.garorasu.productrxtask.Form;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +33,7 @@ public class FormFragment extends Fragment implements FormView {
     private FormPresenter presenter;
     private LinearLayout mForm;
     private ProgressBar mProgressBar;
+    private InputMethodManager imm;
 
     public FormFragment() {
         // Required empty public constructor
@@ -54,11 +58,12 @@ public class FormFragment extends Fragment implements FormView {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         mSex = adapterView.getItemAtPosition(i).toString().toLowerCase();
+                        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             }
         });
 
@@ -66,7 +71,6 @@ public class FormFragment extends Fragment implements FormView {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showProgress();
                 submitForm();
             }
         });
@@ -87,6 +91,9 @@ public class FormFragment extends Fragment implements FormView {
         }
 
         if(mEmp_id.length()>0 && mName.length()>0){
+            Log.d("FORM","Employee id : "+mEmp_id.length()+" mName : "+mName.length());
+            showProgress();
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             presenter = new FormPresenterImp(this);
             presenter.submitForm(new Survey(Integer.parseInt(mEmp_id),mName,mSex));
         }
@@ -124,5 +131,10 @@ public class FormFragment extends Fragment implements FormView {
     public void resetForm(){
             emp_id.setText("");
             name.setText("");
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 }

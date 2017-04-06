@@ -1,10 +1,10 @@
 package com.rohit.garorasu.productrxtask;
 
-import android.content.Context;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.inputmethod.InputMethodManager;
+
 
 import com.rohit.garorasu.productrxtask.Form.FormFragment;
 import com.rohit.garorasu.productrxtask.Result.ResultFragment;
