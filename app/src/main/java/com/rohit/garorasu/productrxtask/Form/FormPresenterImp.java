@@ -1,6 +1,10 @@
 package com.rohit.garorasu.productrxtask.Form;
 
+import com.rohit.garorasu.productrxtask.Schema;
 import com.rohit.garorasu.productrxtask.Survey;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by garorasu on 6/4/17.
@@ -15,11 +19,11 @@ public class FormPresenterImp implements FormPresenter {
     }
 
     @Override
-    public void submitForm(Survey survey) {
+    public void submitForm(HashMap<String,String> params) {
             if(view != null){
                 view.showProgress();
             }
-            interacter.submitForm(survey);
+            interacter.submitForm(params);
     }
 
     @Override
@@ -34,5 +38,22 @@ public class FormPresenterImp implements FormPresenter {
             if(view != null){
                 view.submitFailure();
             }
+    }
+
+    @Override
+    public void getSchema() {
+            interacter.requestFormSchema();
+    }
+
+    @Override
+    public void addSchema(ArrayList<Schema> schemas) {
+            if(view != null){
+                view.renderViews(schemas);
+            }
+    }
+
+    @Override
+    public void schemaFailure() {
+
     }
 }

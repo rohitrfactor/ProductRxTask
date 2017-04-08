@@ -13,12 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.rohit.garorasu.productrxtask.FilledForm;
 import com.rohit.garorasu.productrxtask.R;
+import com.rohit.garorasu.productrxtask.Schema;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +32,8 @@ public class ResultFragment extends Fragment implements FilledFormView {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeContainer;
     private FormAdapter adapter;
+    private ProgressBar mProgressBar;
+    private LinearLayout mError;
 
 
 
@@ -42,18 +49,23 @@ public class ResultFragment extends Fragment implements FilledFormView {
         View view = inflater.inflate(R.layout.fragment_result, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mProgressBar = (ProgressBar) view.findViewById(R.id.result_progress);
+        mError = (LinearLayout) view.findViewById(R.id.result_error);
+
         adapter = new FormAdapter(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        final FilledFormsPresenter presenter = new FilledFormsPresenterImp(this);
-        presenter.getFilledForms();
 
+        final FilledFormsPresenter presenter = new FilledFormsPresenterImp(this);
+        presenter.getSchema();
+
+        showProgress();
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.getFilledForms();
+                presenter.getSchema();
             }
         });
         // Configure the refreshing colors
@@ -67,12 +79,22 @@ public class ResultFragment extends Fragment implements FilledFormView {
 
     @Override
     public void showProgress() {
-
+            mProgressBar.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
+            mError.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void hideProgress() {
 
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        mError.setVisibility(View.INVISIBLE);
+                }
+            });
     }
 
     @Override
@@ -81,14 +103,14 @@ public class ResultFragment extends Fragment implements FilledFormView {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 swipeContainer.setRefreshing(false);
+                Toast.makeText(getContext(),"Unable to fetch data. Please try again", Toast.LENGTH_SHORT);
             }
         });
     }
 
     @Override
-    public void addForms(final ArrayList<FilledForm> forms) {
+    public void addForms(final ArrayList<HashMap<String,String>> forms) {
 
 
         getActivity().runOnUiThread(new Runnable() {
@@ -100,5 +122,20 @@ public class ResultFragment extends Fragment implements FilledFormView {
             }
         });
 
+    }
+
+    @Override
+    public void getSchema() {
+
+    }
+
+    @Override
+    public void renderViews(final ArrayList<Schema> schemas) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.addSchemas(schemas);
+            }
+        });
     }
 }

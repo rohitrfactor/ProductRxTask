@@ -6,4 +6,5 @@ package com.rohit.garorasu.productrxtask.Result;
 
 public interface FilledFormInteracter {
     void getFilledForms();
+    void requestFormSchema();
 }

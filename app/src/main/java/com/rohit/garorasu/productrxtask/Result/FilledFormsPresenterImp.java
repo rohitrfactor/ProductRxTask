@@ -1,8 +1,10 @@
 package com.rohit.garorasu.productrxtask.Result;
 
 import com.rohit.garorasu.productrxtask.FilledForm;
+import com.rohit.garorasu.productrxtask.Schema;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by garorasu on 6/4/17.
@@ -18,14 +20,11 @@ public class FilledFormsPresenterImp implements FilledFormsPresenter {
     }
     @Override
     public void getFilledForms() {
-        if(view !=null){
-            view.showProgress();
-        }
         interacter.getFilledForms();
     }
 
     @Override
-    public void addForms(ArrayList<FilledForm> forms) {
+    public void addForms(ArrayList<HashMap<String,String>> forms) {
         if(view != null){
             view.addForms(forms);
             view.hideProgress();
@@ -38,5 +37,23 @@ public class FilledFormsPresenterImp implements FilledFormsPresenter {
             view.hideProgress();
             view.showFailure();
         }
+    }
+
+    @Override
+    public void getSchema() {
+        interacter.requestFormSchema();
+    }
+
+    @Override
+    public void addSchema(ArrayList<Schema> schemas) {
+        if(view!=null){
+            view.renderViews(schemas);
+            getFilledForms();
+        }
+    }
+
+    @Override
+    public void schemaFailure() {
+
     }
 }
