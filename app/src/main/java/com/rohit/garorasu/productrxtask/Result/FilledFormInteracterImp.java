@@ -3,8 +3,6 @@ package com.rohit.garorasu.productrxtask.Result;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.rohit.garorasu.productrxtask.FilledForm;
-import com.rohit.garorasu.productrxtask.Form.FormInteracterImp;
 import com.rohit.garorasu.productrxtask.Schema;
 
 import org.json.JSONArray;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -69,9 +66,6 @@ public class FilledFormInteracterImp implements FilledFormInteracter {
                                 schemas.add(Schema.jsonToSchema(object));
                             }
                             presenter.addSchema(schemas);
-                            for(int j=0;j<schemas.size();j++){
-                                System.out.println("Field : "+schemas.get(j).getField());
-                            }
 
                         } catch (JSONException e) {
                             Log.e("Interacter","JSON Exception "+e);
@@ -120,14 +114,14 @@ public class FilledFormInteracterImp implements FilledFormInteracter {
                             //JSONObject json = new JSONObject(responseData);
                             //JSONArray array = json.getJSONArray("forms");
                             JSONArray array = new JSONArray(responseData);
-                            ArrayList<FilledForm> forms = new ArrayList<FilledForm>();
+                            //ArrayList<FilledForm> forms = new ArrayList<FilledForm>();
                             for (int i = 0; i < array.length(); i++) {
                                 HashMap<String,String> result = new HashMap<String, String>();
                                 JSONObject object = array.getJSONObject(i);
                                 Iterator iterator = object.keys();
                                 while (iterator.hasNext()) {
                                     String key = String.valueOf(iterator.next());
-                                    result.put(key, object.getString(key));
+                                    result.put(key.toUpperCase(), object.getString(key));
                                 }
                                output.add(result);
                             }

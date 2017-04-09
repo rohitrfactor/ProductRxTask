@@ -42,6 +42,9 @@ public class FormPresenterImp implements FormPresenter {
 
     @Override
     public void getSchema() {
+            if(view != null){
+                view.showProgress();
+            }
             interacter.requestFormSchema();
     }
 
@@ -54,6 +57,8 @@ public class FormPresenterImp implements FormPresenter {
 
     @Override
     public void schemaFailure() {
-
+        if(view != null){
+            view.schemaFailure();
+        }
     }
 }

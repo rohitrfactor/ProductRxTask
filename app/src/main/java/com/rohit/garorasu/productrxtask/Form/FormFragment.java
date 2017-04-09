@@ -42,18 +42,16 @@ import static java.lang.Boolean.TRUE;
  * A simple {@link Fragment} subclass.
  */
 public class FormFragment extends Fragment implements FormView {
-    private EditText emp_id,name;
-    private Switch sex;
-    private String mEmp_id,mName,mSex = "male";
+
     private FormPresenter presenter;
-    private LinearLayout mForm,mError;
+    private LinearLayout mForm,mError,mSuccess;
     private ProgressBar mProgressBar;
     private InputMethodManager imm;
     private SwipeRefreshLayout swipeContainer;
     private ArrayList<String> keys;
     private ArrayList<Boolean> mandatory;
-    private ArrayList<String> responses;
     private HashMap<String,String> params;
+    private Button retry,fill_another;
 
     public FormFragment() {
         // Required empty public constructor
@@ -68,43 +66,31 @@ public class FormFragment extends Fragment implements FormView {
         mForm =(LinearLayout) view.findViewById(R.id.form);
         mError =(LinearLayout) view.findViewById(R.id.form_error);
         mProgressBar = (ProgressBar) view.findViewById(R.id.form_progress);
-        emp_id = (EditText) view.findViewById(R.id.emp_id);
-        name = (EditText) view.findViewById(R.id.name);
-        Spinner spinner = (Spinner) view.findViewById(R.id.gender_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.gender, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSuccess = (LinearLayout) view.findViewById(R.id.form_success);
+        retry = (Button) view.findViewById(R.id.retry_form_schema);
+        fill_another = (Button) view.findViewById(R.id.fill_another_form);
+        fill_another.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        mSex = adapterView.getItemAtPosition(i).toString().toLowerCase();
-                        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+            public void onClick(View view) {
+                getSchema();
             }
         });
-
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getSchema();
+            }
+        });
         presenter = new FormPresenterImp(this);
         getSchema();
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshform);
-        // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 presenter.getSchema();
             }
         });
-        Button submit = (Button) view.findViewById(R.id.form_submit);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                submitForm();
-            }
-        });
+
         return view;
     }
 
@@ -115,7 +101,6 @@ public class FormFragment extends Fragment implements FormView {
         params = new HashMap<>();
         boolean refill = false;
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-        System.out.println("Output size is : "+keys.size());
         for(int i=1;i<=keys.size();i++){
             EditText editText = (EditText) getView().findViewById(new Integer(i));
             String text = editText.getText().toString();
@@ -142,8 +127,7 @@ public class FormFragment extends Fragment implements FormView {
                 @Override
                 public void run() {
                     Toast.makeText(getActivity(),"Form successfully submitted", Toast.LENGTH_SHORT);
-                    hideProgress();
-                    resetForm();
+                    showSuccess();
 
                 }
             });
@@ -154,17 +138,10 @@ public class FormFragment extends Fragment implements FormView {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                hideProgress();
-                Toast.makeText(getContext(),"Unable to submit response. Please try again", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(),"Unable to submit response. Please try again", Toast.LENGTH_LONG);
             }
         });
     }
-    public void showProgress(){
-           mProgressBar.setVisibility(View.VISIBLE);
-           mForm.setVisibility(View.INVISIBLE);
-           mError.setVisibility(View.INVISIBLE);
-    }
-
     @Override
     public void getSchema() {
             presenter.getSchema();
@@ -183,35 +160,27 @@ public class FormFragment extends Fragment implements FormView {
                 mandatory = new ArrayList<Boolean>();
                 for(Schema schema:schemas){
                     if(schema.getKey().compareTo("PRI")!=0) {
-
                         keys.add(schema.getField());
-
                         if(schema.getNull()=="NO"){
                             mandatory.add(FALSE);
                         }else{
                             mandatory.add(TRUE);
                         }
-                        TextView textView = new TextView(getContext());
                         EditText editText = new EditText(getContext());
                         editText.setId(i+1);
                         ViewGroup.LayoutParams lparams = new ViewGroup.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         editText.setLayoutParams(lparams);
-                        textView.setLayoutParams(lparams);
-                        textView.setTextColor(getResources().getColor(R.color.textColor));
                         editText.setTextColor(getResources().getColor(R.color.textColor));
                         editText.setHintTextColor(getResources().getColor(R.color.textColor));
-                        textView.setFocusableInTouchMode(FALSE);
                         editText.setFocusableInTouchMode(TRUE);
                         editText.setSingleLine();
-                        textView.setText(schema.getField().toUpperCase());
                         if(schema.getDefault()!="null"){
                             editText.setText(schema.getDefault());
                         }
                         if(schema.get_type()=="int"){
                             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                         }
-                        System.out.println("set : "+i+" schema : "+schemas.size());
                         if(i==schemas.size()-2){
                             editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
                         }else{
@@ -221,8 +190,16 @@ public class FormFragment extends Fragment implements FormView {
                         InputFilter[] fArray = new InputFilter[1];
                         fArray[0] = new InputFilter.LengthFilter(schema.size());
                         editText.setFilters(fArray);
+
+                        TextView textView = new TextView(getContext());
+                        textView.setLayoutParams(lparams);
+                        textView.setTextColor(getResources().getColor(R.color.textColor));
+                        textView.setFocusableInTouchMode(FALSE);
+                        textView.setText(schema.getField().toUpperCase());
+
                         mForm.addView(textView);
                         mForm.addView(editText);
+
                         if(schema.getComment().compareTo("")!=0){
                             TextView commentView = new TextView(getContext());
                             commentView.setLayoutParams(lparams);
@@ -240,7 +217,6 @@ public class FormFragment extends Fragment implements FormView {
                 buttonParams.gravity = Gravity.CENTER;
                 buttonParams.setMargins(0,10,0,0);
                 form_submit.setLayoutParams(buttonParams);
-                form_submit.setId(R.id.form_submit);
                 form_submit.setTextColor(getResources().getColor(R.color.textColor));
                 form_submit.setHintTextColor(getResources().getColor(R.color.textColor));
                 form_submit.setText("Submit");
@@ -255,15 +231,41 @@ public class FormFragment extends Fragment implements FormView {
         });
     }
 
+    public void showProgress(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        mForm.setVisibility(View.INVISIBLE);
+        mError.setVisibility(View.INVISIBLE);
+        mSuccess.setVisibility(View.INVISIBLE);
+    }
     public void hideProgress(){
         mProgressBar.setVisibility(View.INVISIBLE);
         mForm.setVisibility(View.VISIBLE);
         mError.setVisibility(View.INVISIBLE);
+        mSuccess.setVisibility(View.INVISIBLE);
     }
-    public void resetForm(){
-            emp_id.setText("");
-            name.setText("");
+    public void showError(){
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mForm.setVisibility(View.INVISIBLE);
+        mSuccess.setVisibility(View.INVISIBLE);
+        mError.setVisibility(View.VISIBLE);
     }
+    public void showSuccess(){
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mForm.setVisibility(View.INVISIBLE);
+        mError.setVisibility(View.INVISIBLE);
+        mSuccess.setVisibility(View.VISIBLE);
+    }
+    @Override
+    public void schemaFailure(){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                swipeContainer.setRefreshing(false);
+                showError();
+            }
+        });
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

@@ -1,10 +1,7 @@
 package com.rohit.garorasu.productrxtask.Result;
 
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,17 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.rohit.garorasu.productrxtask.FilledForm;
 import com.rohit.garorasu.productrxtask.R;
 import com.rohit.garorasu.productrxtask.Schema;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -34,6 +29,7 @@ public class ResultFragment extends Fragment implements FilledFormView {
     private FormAdapter adapter;
     private ProgressBar mProgressBar;
     private LinearLayout mError;
+    private FilledFormsPresenter presenter;
 
 
 
@@ -51,15 +47,20 @@ public class ResultFragment extends Fragment implements FilledFormView {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mProgressBar = (ProgressBar) view.findViewById(R.id.result_progress);
         mError = (LinearLayout) view.findViewById(R.id.result_error);
-
+        Button retry = (Button) view.findViewById(R.id.retry_result_schema);
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getSchema();
+            }
+        });
         adapter = new FormAdapter(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        final FilledFormsPresenter presenter = new FilledFormsPresenterImp(this);
-        presenter.getSchema();
+        presenter = new FilledFormsPresenterImp(this);
+        getSchema();
 
-        showProgress();
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -90,9 +91,9 @@ public class ResultFragment extends Fragment implements FilledFormView {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-        mProgressBar.setVisibility(View.INVISIBLE);
-        recyclerView.setVisibility(View.VISIBLE);
-        mError.setVisibility(View.INVISIBLE);
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    mError.setVisibility(View.INVISIBLE);
                 }
             });
     }
@@ -104,7 +105,9 @@ public class ResultFragment extends Fragment implements FilledFormView {
             @Override
             public void run() {
                 swipeContainer.setRefreshing(false);
-                Toast.makeText(getContext(),"Unable to fetch data. Please try again", Toast.LENGTH_SHORT);
+                mProgressBar.setVisibility(View.INVISIBLE);
+                recyclerView.setVisibility(View.INVISIBLE);
+                mError.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -126,7 +129,7 @@ public class ResultFragment extends Fragment implements FilledFormView {
 
     @Override
     public void getSchema() {
-
+        presenter.getSchema();
     }
 
     @Override

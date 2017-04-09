@@ -1,7 +1,6 @@
 package com.rohit.garorasu.productrxtask.Result;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.rohit.garorasu.productrxtask.FilledForm;
 import com.rohit.garorasu.productrxtask.R;
 import com.rohit.garorasu.productrxtask.Schema;
 
@@ -57,8 +55,14 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
 
         for(int i=0;i<schemas.size();i++){
             TextView textView = new TextView(context);
+            LinearLayout.LayoutParams larams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            larams.setMargins(10,10,10,10);
+            textView.setLayoutParams(larams);
             textView.setText("Sample text "+i);
             textView.setId(i);
+            textView.setTextSize(22);
+            textView.setTextColor(context.getResources().getColor(R.color.textColor));
             cardView.addView(textView);
         }
         view.addView(cardView);
@@ -89,14 +93,8 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView mId,mEmpId,mName,mSex;
         public ViewHolder(View itemView) {
             super(itemView);
-         /*   mId = (TextView) itemView.findViewById(R.id.mId);
-            mEmpId = (TextView) itemView.findViewById(R.id.mEmpId);
-            mName = (TextView) itemView.findViewById(R.id.mName);
-            mSex = (TextView) itemView.findViewById(R.id.mSex);
-            */
         }
     }
 }

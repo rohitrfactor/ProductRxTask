@@ -28,7 +28,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
+        android:gravity="center"
         android:orientation="vertical">
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textSize"
+            android:gravity="center"
+            android:text="Something went wrong! We lost connection with server."
+            android:textColor="@android:color/black"/>
+        <Button
+            android:id="@+id/retry_result_schema"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"/>
     </LinearLayout>
 </FrameLayout>

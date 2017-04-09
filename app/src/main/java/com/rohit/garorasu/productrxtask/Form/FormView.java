@@ -17,4 +17,5 @@ public interface FormView {
     void showProgress();
     void getSchema();
     void renderViews(ArrayList<Schema> schemas);
+    void schemaFailure();
 }

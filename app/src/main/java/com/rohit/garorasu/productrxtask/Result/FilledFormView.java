@@ -1,6 +1,5 @@
 package com.rohit.garorasu.productrxtask.Result;
 
-import com.rohit.garorasu.productrxtask.FilledForm;
 import com.rohit.garorasu.productrxtask.Schema;
 
 import java.util.ArrayList;

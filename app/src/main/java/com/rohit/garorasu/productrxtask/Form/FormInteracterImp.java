@@ -3,9 +3,7 @@ package com.rohit.garorasu.productrxtask.Form;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.rohit.garorasu.productrxtask.FilledForm;
 import com.rohit.garorasu.productrxtask.Schema;
-import com.rohit.garorasu.productrxtask.Survey;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,8 +18,6 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.HttpUrl;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;

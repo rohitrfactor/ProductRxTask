@@ -11,85 +11,22 @@
         android:layout_height="match_parent">
      <ScrollView
          android:layout_width="match_parent"
-         android:layout_height="match_parent">
+         android:layout_height="match_parent"
+         >
     <LinearLayout
         android:id="@+id/form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:orientation="vertical">
-        <android.support.design.widget.TextInputLayout
-            android:textColor="@color/textColor"
-            android:textColorHint="@color/textColor"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/emp_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:nextFocusDown="@+id/name"
-                    android:imeOptions="actionNext"
-                    android:maxLength="10"
-                    android:textColor="@color/textColor"
-                    android:textColorHint="@color/textColor"
-                    android:focusableInTouchMode="true"
-                    android:hint="Enter your employee id"
-                    />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:textColor="@color/textColor"
-            android:textColorHint="@color/textColor"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:focusableInTouchMode="true"
-                android:textColor="@color/textColor"
-                android:textColorHint="@color/textColor"
-                android:nextFocusDown="@+id/gender_spinner"
-                android:hint="Enter your name"
-                />
-        </android.support.design.widget.TextInputLayout>
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/activity_vertical_margin"
-          android:orientation="horizontal">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:textColor="@color/textColor"
-              android:textColorHint="@color/textColor"
-              android:layout_weight="2"
-              android:text="Choose your gender"/>
-          <Spinner
-              android:id="@+id/gender_spinner"
-              android:focusableInTouchMode="true"
-              android:nextFocusDown="@+id/form_submit"
-              android:layout_weight="1"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />
-      </LinearLayout>
-    <Button
-        android:id="@+id/form_submit"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_width="wrap_content"
-        android:textColor="@color/textColor"
-        android:textColorHint="@color/textColor"
-        android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:layout_gravity="center"
-        android:text = "Submit"
-        />
-    </LinearLayout>
+        <ProgressBar
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"/>
+     </LinearLayout>
      </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
     <ProgressBar
@@ -104,7 +41,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
+        android:gravity="center"
         android:orientation="vertical">
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textSize"
+            android:gravity="center"
+            android:text="Something went wrong! We lost connection with server."
+            android:textColor="@android:color/black"/>
+        <Button
+            android:id="@+id/retry_form_schema"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/form_success"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Form Successfully submitted!"
+            android:textColor="@android:color/black"/>
+        <Button
+            android:id="@+id/fill_another_form"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fill Another"/>
     </LinearLayout>
 </RelativeLayout>

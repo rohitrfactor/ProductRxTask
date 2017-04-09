@@ -8,8 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 
-import com.rohit.garorasu.productrxtask.Form.FormFragment;
-import com.rohit.garorasu.productrxtask.Result.ResultFragment;
+
 
 public class MainActivity extends AppCompatActivity {
     FragmentPagerAdapter adapterViewPager;
@@ -42,16 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
-
-    }
-    public void setUpForm(){
-        //getSupportFragmentManager().beginTransaction().replace(R.id.container,new FormFragment()).commit();
-    }
-    public void setUpResult(){
-        //getSupportFragmentManager().beginTransaction().replace(R.id.container,new ResultFragment()).commit();
     }
 }
